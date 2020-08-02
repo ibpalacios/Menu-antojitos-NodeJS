@@ -45,6 +45,27 @@ controllerCymbal.get('/getCymbalById/:id', (req, res) =>{
     });
 });
 
+controllerCymbal.get('/getAllCymbalWhereId/:idCategory', (req, res) => {
+    let id = req.params.idCategory;
+
+    Cymbal.find( { idCategory:id } ).then(resp => {
+        return res.status(200).json({
+            ok: true,
+            status: 200,
+            msg: 'Registros consultado exitosamente',
+            count: resp.length,
+            cnt: resp
+        });
+    }).catch(err => {
+        return res.status(400).json({
+            ok: false,
+            status: 400,
+            msg: 'No se encontraron registros',
+            err: err
+        });
+    });
+});
+
 controllerCymbal.post('/registerCymbal', (req, res) => {
     let cymbalParam = req.body;
 
