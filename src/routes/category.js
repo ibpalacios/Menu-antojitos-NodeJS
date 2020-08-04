@@ -119,7 +119,7 @@ controllerCategory.put('/updateCategory/:id', (req, res) => {
         return res.status(400).json({
             ok: false,
             status: 400,
-            msg: 'Error al actualizar la modalidad',
+            msg: 'Error al actualizar la categoria',
             err: 'El número de parametros enviados no concuerdan con los que requiere la API'
         });
     } 

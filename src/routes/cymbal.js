@@ -118,58 +118,55 @@ controllerCymbal.post('/registerCymbal', (req, res) => {
 });
 
 controllerCymbal.put('/updateCymbal/:id', (req, res) => {
+    let bodyParm; 
+    let cymbalObj;
     let id = req.params.id;
-    let bodyParm = req.body;
-    // let numParam  = Object.keys(req.body).length;
-    //TO-DO: Cundo ha la integracion verifcar cuantos parametros recibe la api
-    //       para validar la actualizacion de el blnStatus.
+    let numParam  = Object.keys(req.body).length;
     
-
-    //let strNombre = wordFormat(bodyParm);
-
-    Cymbal.findOne( { 'strName': bodyParm.strName } ).then(resp => {
-        if (resp){
-            return res.status(400).json({
-                ok: false,
-                status: 400,
-                msg: 'No se puede registrar la categoria porque ya exite',
-                cnt: resp 
-            });
+    if(numParam == 11){
+        bodyParm = req.body;
+        let strNombre = wordFormat(bodyParm);
+        cymbalObj = {
+            idCategory: bodyParm.idCategory,
+            strName: strNombre,
+            strDescription: bodyParm.strDescription,
+            strIngredients: bodyParm.strIngredients,
+            nmbPieces: bodyParm.nmbPieces,
+            nmbPrice: bodyParm.nmbPrice,
+            blnStatus: bodyParm.blnStatus
         }
-
-        let cymbalObj = {
-            idCategory: cymbalParam.idCategory,
-            strName: cymbalParam.strName,
-            strDescription: cymbalParam.strDescription,
-            strIngredients: cymbalParam.strIngredients,
-            nmbPieces: cymbalParam.nmbPieces,
-            nmbPrice: cymbalParam.nmbPrice
+    }
+    if(numParam == 1){
+        bodyParm = req.body;
+        cymbalObj = {
+            blnStatus: bodyParm.blnStatus
         }
+    }
+    if(numParam !== 11 && numParam !== 1){
+        return res.status(400).json({
+            ok: false,
+            status: 400,
+            msg: 'Error al actualizar el platillo',
+            err: 'El número de parametros enviados no concuerdan con los que requiere la API'
+        });
+    } 
 
-        Cymbal.findByIdAndUpdate(id, { $set: cymbalObj } ).then(resp => {
-            return res.status(200).json({
-                ok: true,
-                status: 200,
-                msg: "Platillo acutalizada exitosamente",
-                cont: resp.length,
-                cnt: resp
-            });
-        }).catch(err => {
-            return res.status(400).json({
-                ok: false,
-                status: 400,
-                msg: 'Error al actualizar el platillo',
-                err: err
-            });
+    Cymbal.findByIdAndUpdate(id, { $set: cymbalObj } ).then(resp => {
+        return res.status(200).json({
+            ok: true,
+            status: 200,
+            msg: "Platillo acutalizada exitosamente",
+            cont: resp.length,
+            cnt: resp
         });
     }).catch(err => {
         return res.status(400).json({
             ok: false,
             status: 400,
-            msg: "Error al buscar el platillo",
+            msg: 'Error al actualizar el platillo',
             err: err
         });
-    });   
+    });
 });
 
 controllerCymbal.delete('/deleteCymbal/:id', (req, res) => {
